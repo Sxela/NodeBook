@@ -1,0 +1,27 @@
+transpiler:
+  build: .
+ # ports:
+ #    - "4000:3000"
+  volumes_from:
+    - data
+  # typescript should watch the src directory
+  command: tsc -w --outDir dist/ ./src/index.ts
+
+server:
+  build: .
+  ports:
+     - "4000:3000"
+  volumes_from:
+    - data
+  # nodemon should watch the dist directory
+  command: nodemon -w dist/ dist/index.js
+
+data:
+  build: .
+#  ports:
+#     - "4000:3000"
+  volumes:
+    - .:/app            # share your code with the containers
+    - /app/dist         # container has its own dist directory
+    - /app/node_modules # container has its own node_modules directory
+  command: echo 'ok'
