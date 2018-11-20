@@ -34,19 +34,29 @@ async function get_connections(i, address, to_arr, from_arr)
                 {
                     if(tx.to == address) //if desired address is found as recipient
                     {
-                    //check address array for duplicates before adding
-                    var index = from_arr.findIndex(row => row === tx.from);
-                    if (index == -1 ) from_arr.push([tx.from, tx.value/1000000000000000000]) //if address is not found in the array - add address + tx value
-                    else //if address found - add value 
-                        from_arr[index][1]+=from_arr.value;
-                    }
-
-                    if(tx.from == address) //if desired address is found as sender
-                    {
-                    var index = to_arr.findIndex(row => row === tx.to);
-                    if (index == -1 ) to_arr.push([tx.to, tx.value/1000000000000000000])
-                    else //if address found - add value 
-                        from_arr[index][1]+=to_arr.value;
+                        //check address array for duplicates before adding
+                        var index = from_arr.findIndex(row => row[0] === tx.from); //if address is not found in the array - add address + tx value
+                        if (index == -1 ) {from_arr.push([tx.from, tx.value/1000000000000000000, 1])} 
+                        else //if address found - add value 
+                        {
+                            from_arr[index][1]+=tx.value;
+                            from_arr[index][2]+=1;
+                            console.log('dupe');
+                        } 
+                    }    
+                    else  
+                    {       
+                        if(tx.from == address) //if desired address is found as sender
+                        {
+                            var index = to_arr.findIndex(row => row[0] === tx.to);
+                            if (index == -1 ) {to_arr.push([tx.to, tx.value/1000000000000000000, 1])}
+                            else //if address found - add value 
+                            {
+                            to_arr[index][1]+=tx.value;
+                            to_arr[index][2]+=1;
+                            console.log('dupe');
+                            }   
+                        }
                     }
                 })
        
@@ -65,14 +75,14 @@ async function readblock(startblock, endblock, array)
 }
 
 //tuple test
-type entry = [string, number];
+type entry = [string, number, number];
 let test:entry;
-test=['test',1];
+test=['test',1,1];
 console.log(test);
 let to = new Array<entry>();
-to.push(['test',1]);
-to.push(['test',2]);
-to[1][1]+=2;
+to.push(['test',1,1]);
+to.push(['test',2,1]);
+to[1][2]+=2;
 console.log(to);
 
 
@@ -95,4 +105,4 @@ async function search_address(startblock, endblock, address)
 }
 
 //readblock(1728879,1728879+0,addresses);
-search_address(6740125,6740125+1,'0x876EabF441B2EE5B5b0554Fd502a8E0600950cFa');
+search_address(6740000,6740895,'0x59a5208B32e627891C389EbafC644145224006E8');
