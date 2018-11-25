@@ -1,7 +1,7 @@
 
 import Web3 = require("web3"); // Note the special syntax! Copy this line when in doubt!
 import * as db_block from './controllers/eth_Block_controller';
-let web3 = new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io/v3/25c667224edd406e857d23c6e4c07bc4"));
+let web3 = new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io/"));
 
 
 
