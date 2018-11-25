@@ -1,6 +1,10 @@
 # smart people already figured out how to install node
 # FROM mhart/alpine-node:7 
-FROM resinci/npm-x86_64-ubuntu-node10
+# FROM resinci/npm-x86_64-ubuntu-node10
+
+FROM node:10
+
+
 
 # create a work directory inside the container
 RUN mkdir /app
@@ -10,6 +14,7 @@ WORKDIR /app
 EXPOSE 3000
 
 # install utilities. I currently like yarn
-RUN npm install -g yarn nodemon typescript web3
+RUN npm install -g yarn nodemon typescript 
 # install dependencies
 RUN yarn
+RUN yarn install -y web3
