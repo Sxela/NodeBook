@@ -1,7 +1,5 @@
 
 import * as mongoose from 'mongoose';
-let db = require('./database')
-
 
 export const eth_blockSchema = new mongoose.Schema({
     eth_block: 

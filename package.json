@@ -1,12 +1,13 @@
 {
   "name": "NodeBook",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Test version",
   "main": "index.js",
   "scripts": {
+    "start":"tsc -w --outDir dist/ ./src/index.ts | nodemon -w dist/ dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "sxela",
   "license": "ISC",
   "dependencies": {
     "@types/node": "^10.12.10",

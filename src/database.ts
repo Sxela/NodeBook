@@ -1,12 +1,12 @@
 let mongoose = require('mongoose');
-const server = 'data:27017'; 
-const database = 'test_block';     
+import config = require('./config/config');
+    
 class Database {
   constructor() {
     this._connect()
   }
 _connect() {
-     mongoose.connect(`mongodb://${server}/${database}`, { useNewUrlParser: true })
+     mongoose.connect(`mongodb://${config.mongoUrl}/${config.mongoDatabase}`, `${config.mongoOptions}`)
        .then(() => {
          console.log('Database connection successful')
        })

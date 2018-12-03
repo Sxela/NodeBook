@@ -1,14 +1,6 @@
 
 version: '2'
 services:
-  transpiler:
-    build: .
-
-    volumes_from:
-      - server
- 
-    command: tsc -w --outDir dist/ ./src/index.ts
-
 
   server:
     build: .
@@ -19,7 +11,7 @@ services:
       - /app/dist         # container has its own dist directory
       - /app/node_modules # container has its own node_modules directory
 
-    command: nodemon -w dist/ dist/index.js
+    command: "yarn start"
 
   data:
     image: mongo
