@@ -4,16 +4,16 @@
   "description": "Test version",
   "main": "index.js",
   "scripts": {
-    "start":"tsc -w --outDir dist/ ./src/index.ts | nodemon -w dist/ dist/index.js",
+    "start": "tsc -w --outDir dist/ ./src/index.ts | nodemon -w dist/ dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "sxela",
   "license": "ISC",
   "dependencies": {
-    "@types/node": "^10.12.10",
+    "@types/node": "^10.12.11",
     "@types/web3": "^1.0.12",
     "express": "^4.16.2",
-    "mongoose": "^5.3.13",
+    "mongoose": "^5.3.14",
     "ubuntu": "^2.0.0",
     "web3": "^1.0.0-beta.36"
   }

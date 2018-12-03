@@ -3,7 +3,7 @@ import * as db_block from './controllers/eth_Block_controller';
 import eth_Block from "./models/eth_Block";
 import eth_Tx from "./models/eth_Tx";
 import config = require('./config/config');
-import { format } from "url";
+
 let web3 = new Web3(new Web3.providers.HttpProvider(config.web3Provider));
 
 type entry = [string, number, number];
@@ -174,23 +174,23 @@ eth_Tx.find({'transaction.from': '0xb854bf62681303653c461Efa5Cd8E7555230E628'}, 
     return to;
 })
 
+
 eth_Tx.aggregate([
     {
         $match: 
-        {'transaction.from': '0xb854bf62681303653c461Efa5Cd8E7555230E628'}
+        {'transaction.from': '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8'}
     },
     {
         $group:
         { 
             _id: "$transaction.to",
             Txes: { $sum: 1 },
-            value: { $sum : "$transaction.value"}
-            
-            
+            value: { $sum : "$transaction.value"}            
         }
     }
 ]).exec((err,res)=>{
-console.log(res);
+//console.log(res);
+return res;
 })
 
 async function convert_tx_value()
@@ -214,3 +214,47 @@ let batchsize = 100; //taking results in batches;
 }
 
 //convert_tx_value();
+//console.log(1)
+//db_block.getBlock(6000000);
+//addBlocks(6000000,6010000);
+
+export async function tx_get_connections_out_aggr(address) //get connections from a given address from tx db
+{
+    let aggr = await eth_Tx.aggregate([
+        {
+            $match: 
+            {'transaction.from': address}
+        },
+        {
+            $group:
+            { 
+                _id: "$transaction.to",
+                Txes: { $sum: 1 },
+                value: { $sum : "$transaction.value"}            
+            }
+        }
+    ]).limit(20).exec(async (err,res)=>{
+        console.log(res);
+    })
+    return aggr;
+}
+
+export async function tx_get_connections_in_aggr(address) //get connections to a given address from tx db
+{
+    let aggr;
+    await eth_Tx.aggregate([
+        {
+            $match: 
+            {'transaction.to': address}
+        },
+        {
+            $group:
+            { 
+                _id: "$transaction.from",
+                Txes: { $sum: 1 },
+                value: { $sum : "$transaction.value"}            
+            }
+        }
+    ]).limit(20).exec((err,res)=>{
+    })
+}

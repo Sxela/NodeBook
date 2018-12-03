@@ -22,4 +22,11 @@ router.get('/addresses/:id', async (req, res) => {
     })
 })
 
+router.get('/add/:id', async (req, res) => {
+    res.send({
+        tx_in: await app.tx_get_connections_in_aggr(req.params.id),
+        tx_out: await app.tx_get_connections_out_aggr(req.params.id),
+    })
+})
+
 module.exports = router

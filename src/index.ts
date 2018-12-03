@@ -1,10 +1,9 @@
 
 import config = require('./config/config');
-import * as router from './routes/addresses'
-import * as express from 'express'
+import * as router from './routes/addresses';
+import * as express from 'express';
+let db = require('./database')
 
-
-let db = require('./database');
 const App = express();
 
 App.listen(config.port, (err: Error) => {
@@ -15,3 +14,4 @@ App.listen(config.port, (err: Error) => {
 })
 
 App.use(router)
+

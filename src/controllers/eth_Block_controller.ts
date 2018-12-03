@@ -6,9 +6,7 @@ import config = require('./../config/config');
 let web3 = new Web3(new Web3.providers.HttpProvider(config.web3Provider));
 
 export async function getBlock(num:Number) // returns 1 eth block
-{
-    
-        
+{ 
     let block = await eth_Block.find({eth_block_number:num}, 'eth_block', async (err:any, result:any) =>
     {
         if (err) 
@@ -35,6 +33,8 @@ if (block[0] == null) //if block was not found, download it
                              console.log(newblock.number + ' added successfully. Contains ' + newblock.transactions.length + ' txes. Nonce:' + newblock.nonce );
                                  // add txes when block is not found, to add new txes 
                              newblock.transactions.forEach(element => {
+                                 let num : Number = element.value*1; 
+                                 element.value = num;
                                 txAdd(element);    
                                 });
                         }
@@ -46,6 +46,8 @@ else
 {
     if ((num % 100) == 0) {console.log('Block found: ' + block[0].eth_block.number + '. Contains ' + block[0].eth_block.transactions.length + ' txes. Nonce:' + block[0].eth_block.nonce);}
     block[0].eth_block.transactions.forEach(element => {
+        let num : Number = element.value*1;
+        element.value = num;
         txAdd(element);    
         });
 }
