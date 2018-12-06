@@ -6,15 +6,13 @@ import config = require('./config/config');
 
 let web3 = new Web3(new Web3.providers.HttpProvider(config.web3Provider));
 
-type entry = [string, number, number];
-
 async function addBlocks(startblock, endblock) //add blocks + transactions 
 {
     let date = Date();
     let numblocks; 
-    await eth_Block.countDocuments().then(count=> {console.log('Current # of blocks in db: '+count); numblocks = count});
+    await eth_Block.estimatedDocumentCount().then(count=> {console.log('Current # of blocks in db: '+count); numblocks = count});
     let numtxs;
-    await eth_Tx.countDocuments().then(count=> {console.log('Current # of txs in db: '+count); numtxs = count});
+    await eth_Tx.estimatedDocumentCount().then(count=> {console.log('Current # of txs in db: '+count); numtxs = count});
 
     let latestblock = await web3.eth.getBlockNumber();
     if (endblock > latestblock)
@@ -34,12 +32,12 @@ async function addBlocks(startblock, endblock) //add blocks + transactions
 
         
     }
-    await eth_Block.countDocuments().then(count=> 
+    await eth_Block.estimatedDocumentCount().then(count=> 
         {
             numblocks=count-numblocks;
             console.log('Added '+ numblocks+' new blocks')
         });
-    await eth_Tx.countDocuments().then(count=> 
+    await eth_Tx.estimatedDocumentCount().then(count=> 
         {
             numtxs=count-numtxs;
             console.log('Added ' +numtxs+ ' new txes')
@@ -73,7 +71,7 @@ let batchsize = 100; //taking results in batches;
     }
 }
 
-//addBlocks(6000000,6010000);
+
 
 export async function tx_get_connections_out(address) //get connections from a given address from tx db
 {
@@ -114,3 +112,10 @@ export async function tx_get_connections_in(address) //get connections to a give
     .sort({value: 'desc'})
     .limit(20)
 }
+
+//addBlocks(6000000,6010000);
+//addBlocks(6010000,6020000);
+//addBlocks(6020000,6040000);
+//addBlocks(6040000,6060000);
+
+

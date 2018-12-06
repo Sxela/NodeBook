@@ -1,5 +1,5 @@
 module.exports = {
-    port: 3000,
+    port: 8081,
     mongoUrl: 'data:27017',
     mongoDatabase: 'test_block',
     mongoOptions: '{ useNewUrlParser: true }',

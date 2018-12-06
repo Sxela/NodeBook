@@ -10,10 +10,11 @@
   "author": "sxela",
   "license": "ISC",
   "dependencies": {
-    "@types/node": "^10.12.11",
+    "@types/node": "^10.12.12",
     "@types/web3": "^1.0.12",
+    "cors": "^2.8.5",
     "express": "^4.16.2",
-    "mongoose": "^5.3.14",
+    "mongoose": "^5.3.15",
     "ubuntu": "^2.0.0",
     "web3": "^1.0.0-beta.36"
   }

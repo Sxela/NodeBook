@@ -11,7 +11,7 @@ RUN mkdir /app
 WORKDIR /app
 
 # Expose the port outside of the container
-EXPOSE 3000
+EXPOSE 8081
 
 # install utilities. I currently like yarn
 RUN npm install -g yarn nodemon typescript 
