@@ -93,6 +93,33 @@ export async function tx_get_connections_out(address) //get connections from a g
     .limit(20)
 }
 
+export async function tx_get_total_connections_out(address) //get total num of connections from a given address from tx db
+{
+    return await eth_Tx.aggregate([
+        {
+            $match: 
+            {'transaction.from': address}
+        },
+        {
+            $group:
+            { 
+                _id: "$transaction.to",
+                Txes: { $sum: 1 },
+                value: { $sum : "$transaction.value"}            
+            }
+            
+        },
+        {
+            $group:
+            { 
+                _id: null,
+                links: { $sum: 1 },
+                value: { $sum : "$value"}            
+            }
+        }
+    ])
+}
+
 export async function tx_get_connections_in(address) //get connections to a given address from tx db
 {
     return await eth_Tx.aggregate([
@@ -113,9 +140,37 @@ export async function tx_get_connections_in(address) //get connections to a give
     .limit(20)
 }
 
+export async function tx_get_total_connections_in(address) //get connections to a given address from tx db
+{
+    return await eth_Tx.aggregate([
+        {
+            $match: 
+            {'transaction.to': address}
+        },
+        {
+            $group:
+            { 
+                _id: "$transaction.from",
+                Txes: { $sum: 1 },
+                value: { $sum : "$transaction.value"}            
+            }
+        },
+        {
+            $group:
+            { 
+                _id: null,
+                links: { $sum: 1 },
+                value: { $sum : "$value"}            
+            }
+        }
+    ])
+}
 //addBlocks(6000000,6010000);
 //addBlocks(6010000,6020000);
 //addBlocks(6020000,6040000);
 //addBlocks(6040000,6060000);
+async function test(){
+console.log( await tx_get_total_connections_out('0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8'))
+}
 
-
+test()
