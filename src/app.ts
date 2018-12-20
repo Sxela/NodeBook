@@ -3,6 +3,8 @@ import * as db_block from './controllers/eth_Block_controller';
 import eth_Block from "./models/eth_Block";
 import eth_Tx from "./models/eth_Tx";
 import config = require('./config/config');
+import eth_Alias from "./models/eth_Alias";
+import * as scrapper from './services/scrapper'
 
 let web3 = new Web3(new Web3.providers.HttpProvider(config.web3Provider));
 
@@ -165,12 +167,26 @@ export async function tx_get_total_connections_in(address) //get connections to 
         }
     ])
 }
+
+export async function get_address_aliases(address)
+{
+    var string = address
+    string = string.toLowerCase();
+    return await eth_Alias.find({'address':string})
+}
 //addBlocks(6000000,6010000);
 //addBlocks(6010000,6020000);
 //addBlocks(6020000,6040000);
 //addBlocks(6040000,6060000);
 async function test(){
 console.log( await tx_get_total_connections_out('0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8'))
+console.log( await get_address_aliases('0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8'));
 }
 
 test()
+
+
+
+
+
+//scrapper
