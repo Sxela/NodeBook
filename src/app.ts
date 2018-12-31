@@ -87,7 +87,36 @@ export async function tx_get_connections_out(address) //get connections from a g
             { 
                 _id: "$transaction.to",
                 Txes: { $sum: 1 },
-                value: { $sum : "$transaction.value"}            
+                value: { $sum : "$transaction.value"}, 
+                firstBlock: { $min : "$transaction.blockNumber"},
+                lastBlock: { $max : "$transaction.blockNumber"}          
+            }
+        }
+    ])
+    .sort({value: 'desc'})
+    .limit(20)
+}
+
+export async function tx_get_connections_out_after_blk(address, block) //get connections from a given address from tx db
+{
+    return await eth_Tx.aggregate([
+        {
+            $match: 
+        { 
+            $and: [
+            {'transaction.from': address},
+            {'transaction.blockNumber': {$gte : block}}
+            ]
+        }
+        },
+        {
+            $group:
+            { 
+                _id: "$transaction.to",
+                Txes: { $sum: 1 },
+                value: { $sum : "$transaction.value"}, 
+                firstBlock: { $min : "$transaction.blockNumber"},
+                lastBlock: { $max : "$transaction.blockNumber"}          
             }
         }
     ])
@@ -101,6 +130,38 @@ export async function tx_get_total_connections_out(address) //get total num of c
         {
             $match: 
             {'transaction.from': address}
+        },
+        {
+            $group:
+            { 
+                _id: "$transaction.to",
+                Txes: { $sum: 1 },
+                value: { $sum : "$transaction.value"}            
+            }
+            
+        },
+        {
+            $group:
+            { 
+                _id: null,
+                links: { $sum: 1 },
+                value: { $sum : "$value"}            
+            }
+        }
+    ])
+}
+
+export async function tx_get_total_connections_out_after_blk(address, block) //get total num of connections from a given address from tx db
+{
+    return await eth_Tx.aggregate([
+        {
+            $match: 
+            { 
+                $and: [
+                {'transaction.from': address},
+                {'transaction.blockNumber': {$gte : block}}
+                ]
+            }
         },
         {
             $group:
@@ -179,14 +240,12 @@ export async function get_address_aliases(address)
 //addBlocks(6020000,6040000);
 //addBlocks(6040000,6060000);
 async function test(){
-console.log( await tx_get_total_connections_out('0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8'))
+console.log( await tx_get_total_connections_out_after_blk('0x1CF6b3CFeB7E14E917a28E3e52b183A6d4FEe24c', 0))
+
+console.log( await tx_get_connections_out_after_blk('0x1CF6b3CFeB7E14E917a28E3e52b183A6d4FEe24c', 0))
 console.log( await get_address_aliases('0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8'));
 }
 
 test()
-
-
-
-
 
 //scrapper

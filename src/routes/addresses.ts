@@ -38,10 +38,16 @@ router.get('/addresses/out/:id', async (req, res) => {
     })
 })
 
-router.get('/addresses/alias/:id', async (req, res) => { 
+router.get('/addresses/out/:id/:block', async (req, res) => {
     res.send({
+        total_out: await app.tx_get_total_connections_out_after_blk(req.params.id, parseInt(req.params.block)),
+        tx_out: await app.tx_get_connections_out_after_blk(req.params.id, parseInt(req.params.block)),
         aliases: await app.get_address_aliases(req.params.id)
-    })
+        
+    });
 })
+
+
+
 
 module.exports = router
