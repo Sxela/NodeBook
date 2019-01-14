@@ -11,12 +11,17 @@ tx.save(async (err:any, tx2:any) =>
 {
     if (err) 
         {
-            //console.log('Error! ' + err);       
+           // console.log('Error! ' + err);       
         }
     else
     {
          //console.log(await tx.hash + ' added successfully. From ' + await tx.to + ' to ' + await tx.to + ' for ' + await tx.value );
     }
 })
+} 
+
+export async function txAdd_bulk(transactions)
+{
+    eth_tx.insertMany(transactions, { ordered: false }, (err, res) => {});
 } 
 

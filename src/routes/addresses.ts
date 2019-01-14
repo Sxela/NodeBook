@@ -20,7 +20,8 @@ router.get('/addresses/:id', async (req, res) => {
         total_in: await app.tx_get_total_connections_in(req.params.id),
         total_out: await app.tx_get_total_connections_out(req.params.id),
         tx_in: await app.tx_get_connections_in(req.params.id),
-        tx_out: await app.tx_get_connections_out(req.params.id)
+        tx_out: await app.tx_get_connections_out(req.params.id),
+        aliases: await app.get_address_aliases(req.params.id)
     })
 })
 
@@ -63,7 +64,7 @@ router.get('/addresses/in/:id/:block', async (req, res) => {
 })
 
 router.get('/getblocks/:begin/:end', async (req, res) => {
-    app.addBlocks_batch(req.params.begin,req.params.end, 20);
+    app.addBlocks_batch(req.params.begin,req.params.end, 20, 10);
 })
 
 

@@ -7,19 +7,20 @@ import aliasAdd from '../controllers/eth_Alias_controller'
 
 
 var URL = 'https://etherscan.io/labelcloud';
-//var URL = 'https://etherscan.io/accounts?l=Phish/Hack';
 var results = [];
 
 var q = tress(function(url, callback){
     needle.get(url, function(err, res){
-        if (err) throw err;
-        //console.log(res.body)
+        if (err) {
+            console.log(err);
+            q.push(url);
+        }
 
         // парсим DOM
         var $ = cheerio.load(res.body);
 
         //информация о новости
-        if ($('h1').text() === '\nToken Tracker'){
+            if (url.search('tokens') != -1){    
             console.log ($('h1').text())
             results.push($(".table-hover > tbody > tr").map((i, element) => ({
             address: $(element).find('td:nth-of-type(1)').text().trim(),

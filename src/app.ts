@@ -48,10 +48,9 @@ export async function addBlocks(startblock, endblock) //add blocks + transaction
         });
     console.log(date)
     console.log(Date())
-    
 }
 
-export async function addBlocks_batch(startblock, endblock, batch) //add blocks + transactions 
+export async function addBlocks_batch(startblock, endblock, batch, threads = 6) //add blocks + transactions 
 {
     async function getBatch(startblock, endblock)
     {
@@ -59,34 +58,36 @@ export async function addBlocks_batch(startblock, endblock, batch) //add blocks 
         {
             if (j % 100 == 0) console.log('checking block #'+j);
             await db_block.getBlock(j);
-            
         }
-        
     }
-
 
     var q = tress(async function(batch, callback){
         console.log('running batch' + batch.startblock + '-' +batch.endblock);
         await getBatch(batch.startblock, batch.endblock)
         callback()
-    }, 6);
+    }, threads);
 
     q.drain = async function(){
         console.log(date);
+        var date2 = new Date()
+        var delta = (date2.valueOf() - date1.valueOf()) / 1000;
         console.log(Date());
+        console.log('Added in '+ delta+' seconds');
         await eth_Block.estimatedDocumentCount().then(count=> 
             {
                 numblocks=count-numblocks;
-                console.log('Added '+ numblocks+' new blocks')
+                console.log('Added '+ numblocks+' new blocks, at '+ numblocks/delta + ' blocks/s')
             });
         await eth_Tx.estimatedDocumentCount().then(count=> 
             {
                 numtxs=count-numtxs;
-                console.log('Added ' +numtxs+ ' new txes')
+                console.log('Added ' +numtxs+ ' new txes, at ' + numtxs/delta + ' tx/s')
             });
     }
 
-    let date = Date();
+    var date1 = new Date()
+    var date = Date()
+    
     let numblocks; 
     await eth_Block.estimatedDocumentCount().then(count=> {console.log('Current # of blocks in db: '+count); numblocks = count});
     let numtxs;
@@ -100,23 +101,13 @@ export async function addBlocks_batch(startblock, endblock, batch) //add blocks 
     }
    for (let i=startblock;i<=endblock;i+=batch) 
     {
-    //    console.log('checking batch #' + (i-startblock)/batch)
-    //    getBatch(i, i+batch)
-    q.push({startblock: i, endblock : i+batch})
-    //    if (i+batch >= endblock-1) 
-    //        {
-     //           
-     //       }
+        q.push({startblock: i, endblock : i+batch})
     }
-    
-    //console.log(date)
-    //console.log(Date())
-    
 }
 
 async function convert_tx_value()
 {
-//let count = await eth_Tx.estimatedDocumentCount();
+
 let count = 1000000;
 let batchsize = 100; //taking results in batches;
     for (let i = 0;i<=count;i+=batchsize)
@@ -138,6 +129,7 @@ let batchsize = 100; //taking results in batches;
 
 export async function tx_get_connections_out(address) //get connections from a given address from tx db
 {
+    address = Web3.utils.toChecksumAddress(address)
     return await eth_Tx.aggregate([
         {
             $match: 
@@ -160,6 +152,7 @@ export async function tx_get_connections_out(address) //get connections from a g
 
 export async function tx_get_connections_out_after_blk(address, block) //get connections from a given address from tx db
 {
+    address = Web3.utils.toChecksumAddress(address)
     return await eth_Tx.aggregate([
         {
             $match: 
@@ -187,6 +180,7 @@ export async function tx_get_connections_out_after_blk(address, block) //get con
 
 export async function tx_get_total_connections_out(address) //get total num of connections from a given address from tx db
 {
+    address = Web3.utils.toChecksumAddress(address)
     return await eth_Tx.aggregate([
         {
             $match: 
@@ -214,6 +208,7 @@ export async function tx_get_total_connections_out(address) //get total num of c
 
 export async function tx_get_total_connections_out_after_blk(address, block) //get total num of connections from a given address from tx db
 {
+    address = Web3.utils.toChecksumAddress(address)
     return await eth_Tx.aggregate([
         {
             $match: 
@@ -246,6 +241,7 @@ export async function tx_get_total_connections_out_after_blk(address, block) //g
 
 export async function tx_get_connections_in_before_blk(address, block) //get connections to a given address from tx db
 {
+    address = Web3.utils.toChecksumAddress(address)
     return await eth_Tx.aggregate([
         {
             $match: 
@@ -273,6 +269,7 @@ export async function tx_get_connections_in_before_blk(address, block) //get con
 
 export async function tx_get_connections_in(address) //get connections to a given address from tx db
 {
+    address = Web3.utils.toChecksumAddress(address)
     return await eth_Tx.aggregate([
         {
             $match: 
@@ -294,6 +291,7 @@ export async function tx_get_connections_in(address) //get connections to a give
 
 export async function tx_get_total_connections_in_before_blk(address, block) //get connections to a given address from tx db
 {
+    address = Web3.utils.toChecksumAddress(address)
     return await eth_Tx.aggregate([
         {
             $match: 
@@ -327,6 +325,7 @@ export async function tx_get_total_connections_in_before_blk(address, block) //g
 
 export async function tx_get_total_connections_in(address) //get connections to a given address from tx db
 {
+    address = Web3.utils.toChecksumAddress(address)
     return await eth_Tx.aggregate([
         {
             $match: 
@@ -353,44 +352,51 @@ export async function tx_get_total_connections_in(address) //get connections to 
 
 export async function get_address_aliases(address)
 {
-    var string = address
-    string = string.toLowerCase();
-    return await eth_Alias.find({'address':string})
+    address = Web3.utils.toChecksumAddress(address)
+    return await eth_Alias.find({'address':address})
 }
 
 
-//test polygon
+//test polygon --------------------------------------------------------------------------------------------------
 //0xb854bf62681303653c461Efa5Cd8E7555230E628
 //0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8 ethermint
 
-//addBlocks(6000000,6010000);
-//addBlocks(6010000,6020000);
-//addBlocks(6020000,6040000);
-//addBlocks(6040000,6060000);
+
 //next : 4217082-4281112
-//addBlocks(6060000,6064300);
-//addBlocks_batch(6064300,6064500,5)
-//addBlocks_batch(6064500,6064700,5)
-//addBlocks_batch(6064700,6064900,5)
-//addBlocks_batch(6064900,6065000,5)
-//addBlocks_batch(4210000,4210100,5)
-//addBlocks_batch(4210100,4210300,5) // 47 sec - 2 threads
-//addBlocks(4210300,4210500); 75 sec 
-//addBlocks_batch(4210500,4210700,5) //26 sec - 4 threads
-//addBlocks_batch(4210700,4210900,10) // 21 sec 4 threads
-//addBlocks_batch(4211100,4211300,5) // 6 threads // 20 sec
-//addBlocks_batch(4217000,4218000,20) //6 threads // 105 sec
-//addBlocks_batch(4218000,4219000,20) //10 threads // 105 sec 
-//addBlocks_batch(4219000,4229000,20)
+
+
 async function test(){
-console.log( await tx_get_total_connections_out_after_blk('0x1CF6b3CFeB7E14E917a28E3e52b183A6d4FEe24c', 0))
-console.log( await tx_get_connections_out_after_blk('0x1CF6b3CFeB7E14E917a28E3e52b183A6d4FEe24c', 0))
-console.log( await get_address_aliases('0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8'));
-console.log( await tx_get_connections_in_before_blk('0x1CF6b3CFeB7E14E917a28E3e52b183A6d4FEe24c',80000000) )
-console.log( await tx_get_connections_in('0x1CF6b3CFeB7E14E917a28E3e52b183A6d4FEe24c') )
-console.log( await tx_get_total_connections_in_before_blk('0x1CF6b3CFeB7E14E917a28E3e52b183A6d4FEe24c',80000000) )
+//console.log( await tx_get_total_connections_out_after_blk('0x1CF6b3CFeB7E14E917a28E3e52b183A6d4FEe24c', 0))
+//console.log( await tx_get_connections_out_after_blk('0x1CF6b3CFeB7E14E917a28E3e52b183A6d4FEe24c', 0))
+//console.log( await get_address_aliases('0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8'));
+//console.log( await tx_get_connections_in_before_blk('0x1CF6b3CFeB7E14E917a28E3e52b183A6d4FEe24c',80000000) )
+//console.log( await tx_get_connections_in('0x1CF6b3CFeB7E14E917a28E3e52b183A6d4FEe24c') )
+//console.log( await tx_get_total_connections_in_before_blk('0x1CF6b3CFeB7E14E917a28E3e52b183A6d4FEe24c',80000000) )
+//web3.eth.getTransactionReceipt('0xcc2e45aa1b8ebdf248c70bb1727664e4e308e6eb866cd175d8f930dae9cf5be7').then(console.log);
+//0xc9505b49ed8e40bd81f87c12c94938579abcda93
+console.log( await tx_get_connections_in('0x3AA5FA4FBF18d19548680a5f2BbA061b18Fed26b') )
+console.log( await tx_get_connections_out('0x3AA5FA4FBF18d19548680a5f2BbA061b18Fed26b'))
+console.log( await get_address_aliases('0x3aa5fa4fbf18d19548680a5f2bba061b18fed26b'));
 }
 
-test()
+//addBlocks_batch(4210000,4220000,100,20)
+//addBlocks_batch(4220000,4230000,20,6)
+//addBlocks_batch(4230000,4231000,20,6)
+//addBlocks_batch(4231000,4232000,20,10)
+//addBlocks_batch(4232000,4240000,20,10)
+//addBlocks_batch(4200000,4210000,20,6)
+//addBlocks_batch(4100000,4163000,20,6)
+//addBlocks_batch(4163000,4180000,20,6)
+//addBlocks(4180020,4180025)
+//addBlocks_batch(4180000,4180100,20,6)
+//addBlocks_batch(4180100,4181000,20,6)
+//addBlocks_batch(4181000,4190000,20,6)
+//addBlocks_batch(4190000,4200000,20,6) // 10b/s
+//addBlocks_batch(4240000,4250000,50,10) //11b/s
+//addBlocks_batch(4250000,4260000,20,5) //8 b/s
+//addBlocks_batch(4260000,4270000,20,10) //11 b/s
+//addBlocks_batch(4275001,4280000,20,10) //11 b/s
+//addBlocks_batch(4280000,4290000,20,10) //12 b/s
+//test()
 
 //scrapper

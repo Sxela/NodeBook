@@ -1,11 +1,19 @@
 
+
+
 version: '2'
+
 services:
 
   server:
+    logging:
+            driver: "json-file"
+            options:
+                max-size: "1m"
+    cpuset: '1'
     build: .
     ports:
-       - "8081:8081"
+       - "8081:8081" 
     volumes:
       - .:/app            # share your code with the containers
       - /app/dist         # container has its own dist directory
@@ -13,10 +21,11 @@ services:
 
     command: "yarn start"
 
-  data:
-    image: mongo
-    ports:
-       - "27017:27017"
+# docker mongo, for localhost mongo use docker internal localhost alias
+  #data:
+  #  image: mongo
+  #  ports:
+  #     - "27017:27017"
 
 
     
