@@ -22,10 +22,10 @@ services:
     command: "yarn start"
 
 # docker mongo, for localhost mongo use docker internal localhost alias
-  #data:
-  #  image: mongo
-  #  ports:
-  #     - "27017:27017"
+  data:
+    image: mongo
+    ports:
+       - "27017:27017"
 
 
     
