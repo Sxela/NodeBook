@@ -1,8 +1,8 @@
 
 import eth_Block from '../models/eth_Block'
 import Web3 = require("web3"); // Note the special syntax! Copy this line when in doubt!
-import { txAdd } from './eth_Tx_controller';
-import { txAdd_bulk } from './eth_Tx_controller';
+import { txAdd } from './eth_Tx_full_controller';
+import { txAdd_bulk } from './eth_Tx_full_controller';
 import config = require('./../config/config');
 let web3 = new Web3(new Web3.providers.HttpProvider(config.web3Provider));
 
@@ -13,11 +13,7 @@ export async function getBlock(num:Number) // returns 1 eth block
         if (err) 
         {
             console.log('Error!' + err);
-        }
-        else 
-        {
-           
-        }    
+        }   
     })
      
     if (block[0] == null) //if block was not found, download it
@@ -37,7 +33,7 @@ export async function getBlock(num:Number) // returns 1 eth block
                                 newblock.transactions.forEach(element => {
                                     let num : Number = element.value*1; 
                                     element.value = num;
-                                    txes.push({transaction:element})
+                                    txes.push(element)
                                     })
                                 txAdd_bulk(txes)
                                     
@@ -53,7 +49,7 @@ export async function getBlock(num:Number) // returns 1 eth block
         block[0].eth_block.transactions.forEach(element => {
             let num : Number = element.value*1;
             element.value = num;
-            txes.push({transaction:element}) 
+            txes.push(element) 
             })
             txAdd_bulk(txes)
     }
@@ -81,3 +77,4 @@ export async function AddExistingBlocks()
         }    
     })
 }
+
