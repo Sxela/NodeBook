@@ -64,10 +64,7 @@ router.get('/addresses/in/:id/:block', async (req, res) => {
 })
 
 router.get('/getblocks/:begin/:end', async (req, res) => {
-    app.addBlocks_batch(req.params.begin,req.params.end, 20, 10);
+    app.addBlocks_batch(req.params.begin,req.params.end, 100, 10);
 })
-
-
-
 
 module.exports = router

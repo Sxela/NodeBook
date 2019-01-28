@@ -1,7 +1,7 @@
 {
-  "name": "NodeBook",
+  "name": "NodeLink",
   "version": "0.1.0",
-  "description": "Test version",
+  "description": "NodeLink Backend",
   "main": "index.js",
   "scripts": {
     "start": "tsc -w --outDir dist/ ./src/index.ts | nodemon -w dist/ dist/index.js",
@@ -16,6 +16,7 @@
     "cheerio": "*",
     "cors": "^2.8.5",
     "express": "^4.16.2",
+    "greenlock-express": "^2.6.7",
     "mongoose": "^5.3.15",
     "needle": "^2.2.4",
     "tress": "^1.1.4",
