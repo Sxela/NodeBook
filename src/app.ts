@@ -4,9 +4,10 @@ import eth_Block from "./models/eth_Block";
 import eth_Tx_full from "./models/eth_Tx_full";
 import config = require('./config/config');
 import eth_Alias from "./models/eth_Alias";
-import * as scrapper from './services/scrapper'
+import * as scrapper from './services/scrapper';
 
 var tress = require('tress');
+var utils = require('web3-utils');
 
 let web3 = new Web3(new Web3.providers.HttpProvider(config.web3Provider));
 
@@ -106,31 +107,9 @@ export async function addBlocks_batch(startblock, endblock, batch, threads = 6) 
     }
 }
 
-async function convert_tx_value()
-{
-
-let count = 1000000;
-let batchsize = 100; //taking results in batches;
-    for (let i = 0;i<=count;i+=batchsize)
-    {
-
-       await eth_Tx_full.find({'value':{$type:"string"}}).skip(i).limit(batchsize).exec((err,res)=>
-        {
-            res.forEach(function(doc)
-                { 
-                    var amountInt : Number = doc.value*1;
-                    if (i % 100 == 0 ){console.log(i)}
-                    eth_Tx_full.updateOne({_id: doc._id}, {$set: {"value": amountInt}}, (err,res)=>{if (err) console.log(err)});
-                })
-        })
-    }
-}
-
-
-
 export async function tx_get_connections_out(address) //get connections from a given address from tx db
 {
-    address = Web3.utils.toChecksumAddress(address)
+    address = utils.toChecksumAddress(address)
     return await eth_Tx_full.aggregate([
         {
             $match: 
@@ -149,11 +128,12 @@ export async function tx_get_connections_out(address) //get connections from a g
     ])
     .sort({value: 'desc'})
     .limit(20)
+    .allowDiskUse(true)
 }
 
 export async function tx_get_connections_out_after_blk(address, block) //get connections from a given address from tx db
 {
-    address = Web3.utils.toChecksumAddress(address)
+    address = utils.toChecksumAddress(address)
     return await eth_Tx_full.aggregate([
         {
             $match: 
@@ -177,11 +157,12 @@ export async function tx_get_connections_out_after_blk(address, block) //get con
     ])
     .sort({value: 'desc'})
     .limit(20)
+    .allowDiskUse(true)
 }
 
 export async function tx_get_total_connections_out(address) //get total num of connections from a given address from tx db
 {
-    address = Web3.utils.toChecksumAddress(address)
+    address = utils.toChecksumAddress(address)
     return await eth_Tx_full.aggregate([
         {
             $match: 
@@ -205,11 +186,12 @@ export async function tx_get_total_connections_out(address) //get total num of c
             }
         }
     ])
+    .allowDiskUse(true)
 }
 
 export async function tx_get_total_connections_out_after_blk(address, block) //get total num of connections from a given address from tx db
 {
-    address = Web3.utils.toChecksumAddress(address)
+    address = utils.toChecksumAddress(address)
     return await eth_Tx_full.aggregate([
         {
             $match: 
@@ -238,11 +220,12 @@ export async function tx_get_total_connections_out_after_blk(address, block) //g
             }
         }
     ])
+    .allowDiskUse(true)
 }
 
 export async function tx_get_connections_in_before_blk(address, block) //get connections to a given address from tx db
 {
-    address = Web3.utils.toChecksumAddress(address)
+    address = utils.toChecksumAddress(address)
     return await eth_Tx_full.aggregate([
         {
             $match: 
@@ -266,13 +249,14 @@ export async function tx_get_connections_in_before_blk(address, block) //get con
     ])
     .sort({value: 'desc'})
     .limit(20)
+    .allowDiskUse(true)
     //.explain()
     //.then(console.log);
 }
 
 export async function tx_get_connections_in(address) //get connections to a given address from tx db
 {
-    address = Web3.utils.toChecksumAddress(address)
+    address = utils.toChecksumAddress(address)
     return await eth_Tx_full.aggregate([
         {
             $match: 
@@ -290,11 +274,12 @@ export async function tx_get_connections_in(address) //get connections to a give
     ])
     .sort({value: 'desc'})
     .limit(20)
+    .allowDiskUse(true)
 }
 
 export async function tx_get_total_connections_in_before_blk(address, block) //get connections to a given address from tx db
 {
-    address = Web3.utils.toChecksumAddress(address)
+    address = utils.toChecksumAddress(address)
     return await eth_Tx_full.aggregate([
         {
             $match: 
@@ -323,12 +308,13 @@ export async function tx_get_total_connections_in_before_blk(address, block) //g
             }
         }
     ])
+    .allowDiskUse(true)
     
 }
 
 export async function tx_get_total_connections_in(address) //get connections to a given address from tx db
 {
-    address = Web3.utils.toChecksumAddress(address)
+    address = utils.toChecksumAddress(address)
     return await eth_Tx_full.aggregate([
         {
             $match: 
@@ -351,10 +337,11 @@ export async function tx_get_total_connections_in(address) //get connections to 
             }
         }
     ])
+    .allowDiskUse(true)
 }
 
 export async function get_address_aliases(address)
 {
-    address = Web3.utils.toChecksumAddress(address)
+    address = utils.toChecksumAddress(address)
     return await eth_Alias.find({'address':address})
 }

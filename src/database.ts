@@ -6,7 +6,7 @@ class Database {
     this._connect()
   }
 _connect() {
-     mongoose.connect(`mongodb://${config.mongoUrl}/${config.mongoDatabase}`)
+     mongoose.connect(`mongodb://${config.mongoUrl}/${config.mongoDatabase}`, config.mongoOptions)
        .then(() => {
          console.log('Database connection successful')
        })
