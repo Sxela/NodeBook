@@ -98,7 +98,7 @@ lastBlock
 checking all outgoing transactions from address_from that happened after the fist incoming transaction to address_from, 
 grouping them by destination address, summing up transactions and values for each destination address */
 {
-    address_from = Web3.utils.toChecksumAddress(address_from)
+    address_from = utils.toChecksumAddress(address_from)
 
     const query = `
     SELECT SUM(value) AS value, to AS _id, COUNT(to) AS Txes, MIN(timestamp) AS firstBlock
@@ -125,7 +125,7 @@ lastBlock
 checking all outgoing transactions from address_from that happened after the fist incoming transaction to address_from, 
 grouping them by destination address, summing up transactions and values for each destination address */
 {
-  address_from = Web3.utils.toChecksumAddress(address_from)
+  address_from = utils.toChecksumAddress(address_from)
 
     const query = `
     SELECT SUM(value) AS value, to AS _id, COUNT(to) AS Txes, MIN(timestamp) AS firstBlock 
@@ -148,7 +148,7 @@ value
 checking all outgoing transactions from address_from that happened after the fist incoming transaction to address_from, 
 grouping them by destination address, summing up transactions and values for each destination address */
 {
-  address_from = Web3.utils.toChecksumAddress(address_from)
+  address_from = utils.toChecksumAddress(address_from)
 
     const query = `
     SELECT COUNT(to) as links, SUM(value) as value FROM 
@@ -172,7 +172,7 @@ value
 checking all outgoing transactions from address_from that happened after the fist incoming transaction to address_from, 
 grouping them by destination address, summing up transactions and values for each destination address */
 {
-  address_from = Web3.utils.toChecksumAddress(address_from)
+  address_from = utils.toChecksumAddress(address_from)
 
     const query = `
     SELECT COUNT(to) as links, SUM(value) as value FROM 
@@ -203,7 +203,7 @@ lastBlock
 checking all incoming transactions to address_to that happened before the last outgoing transaction from address_to, 
 grouping them by destination address, summing up transactions and values for each destination address */
 {
-  address_to = Web3.utils.toChecksumAddress(address_to)
+  address_to = utils.toChecksumAddress(address_to)
 
     const query = `
     SELECT SUM(value) AS value, from AS _id, COUNT(from) AS Txes, MAX(timestamp) AS lastBlock 
@@ -228,7 +228,7 @@ lastBlock
 checking all incoming transactions to address_to that happened before the last outgoing transaction from address_to, 
 grouping them by destination address, summing up transactions and values for each destination address */
 {
-  address_to = Web3.utils.toChecksumAddress(address_to)
+  address_to = utils.toChecksumAddress(address_to)
 
     const query = `
     SELECT SUM(value) AS value, from AS _id, COUNT(from) AS Txes, MAX(timestamp) AS lastBlock 
@@ -251,7 +251,7 @@ value
 checking all incoming transactions to address_to that happened before the last outgoing transaction from address_to, 
 grouping them by destination address and counting those unique addresses, summing up all the transactions */
 {
-  address_to = Web3.utils.toChecksumAddress(address_to)
+  address_to = utils.toChecksumAddress(address_to)
 
     const query = `
     SELECT COUNT(from) as links, SUM(value) as value FROM 
@@ -276,7 +276,7 @@ value
 checking all incoming transactions to address_to that happened before the last outgoing transaction from address_to, 
 grouping them by destination address and counting those unique addresses, summing up all the transactions */
 {
-  address_to = Web3.utils.toChecksumAddress(address_to)
+  address_to = utils.toChecksumAddress(address_to)
 
     const query = `
     SELECT COUNT(from) as links, SUM(value) as value FROM 
