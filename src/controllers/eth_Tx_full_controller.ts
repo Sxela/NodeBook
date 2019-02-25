@@ -2,6 +2,7 @@ import eth_tx_full from '../models/eth_Tx_full'
 import Web3 = require("web3"); // Note the special syntax! Copy this line when in doubt!
 import config = require('../config/config');
 let web3 = new Web3(new Web3.providers.HttpProvider(config.web3Provider));
+import { insert_data } from '../app_chs_apla';
 
 
 export async function txAdd(transaction: Object)
@@ -23,6 +24,7 @@ tx.save(async (err:any, tx2:any) =>
 export async function txAdd_bulk(transactions)
 {
     //console.log(transactions.length)
-    eth_tx_full.insertMany(transactions, { ordered: false }, (err, res) => {});
+    eth_tx_full.insertMany(transactions, { ordered: false }, (err, res) => {}); // deprecated - remove in next version
+    insert_data(transactions); //drop new data to clickhouse
 } 
 

@@ -10,6 +10,7 @@
   "author": "sxela",
   "license": "ISC",
   "dependencies": {
+    "@apla/clickhouse" : "*",
     "@types/needle": "^2.0.2",
     "@types/node": "^10.12.12",
     "@types/web3": "^1.0.12",

@@ -1,6 +1,4 @@
 
-
-
 version: '2'
 
 services:
@@ -23,10 +21,16 @@ services:
     command: "yarn start"
 
 # docker mongo, for localhost mongo use docker internal localhost alias
-  data:
-    image: mongo
+#  data:
+#    image: mongo
+#    ports:
+#       - "27017:27017"
+
+# docker clickhouse
+  data_chs:
+    image: yandex/clickhouse-server
     ports:
-       - "27017:27017"
+       - "8123:8123"
 
 
     
