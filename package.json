@@ -4,8 +4,10 @@
   "description": "NodeLink Backend",
   "main": "index.js",
   "scripts": {
-    "start": "tsc -w --outDir dist/ ./src/index.ts | nodemon -w dist/ dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "tsc -w --outDir dist/ ./src/index.ts | pm2 start dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "t": "tsc -w --outDir dist/ ./src/index.ts",
+    "p": "pm2 start dist/index.js"
   },
   "author": "sxela",
   "license": "ISC",
