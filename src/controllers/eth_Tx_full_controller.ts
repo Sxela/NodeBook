@@ -24,7 +24,7 @@ tx.save(async (err:any, tx2:any) =>
 export async function txAdd_bulk(transactions)
 {
     //console.log(transactions.length)
-    eth_tx_full.insertMany(transactions, { ordered: false }, (err, res) => {}); // deprecated - remove in next version
+    //eth_tx_full.insertMany(transactions, { ordered: false }, (err, res) => {}); // deprecated - remove in next version
     insert_data(transactions); //drop new data to clickhouse
 } 
 

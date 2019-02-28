@@ -88,9 +88,7 @@ export const eth_txSchema_full = new mongoose.Schema({
       console.log('Runtime in MS: ', Date.now() - this._startTime);
     }
   });
-//one-time run
-//  eth_txSchema_full.index('to', { 'transaction.to': 1, 'transaction.blockNumber': 1, 'transaction.from' : 1, 'transaction.value' : 1}) //index to
-//  eth_txSchema_full.index('from', { 'transaction.from': 1, 'transaction.blockNumber': -1, 'transaction.to' : 1, 'transaction.value' : 1})
+
 
 
 const eth_Tx_full = mongoose.model('eth_Tx_full',eth_txSchema_full);

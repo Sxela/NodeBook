@@ -77,4 +77,15 @@ export async function AddExistingBlocks()
         }    
     })
 }
-
+//getblock and skip adding it to db
+export async function getBlock_direct(num:Number){
+    if ((num % 100) == 0) {console.log('Fetching block number' + num)}
+    const newblock = await web3.eth.getBlock(num,true)
+    let txes = []    
+    newblock.transactions.forEach(element => {
+        let num : Number = element.value*1; 
+        element.value = num;
+        txes.push(element)
+        })
+    txAdd_bulk(txes)
+}

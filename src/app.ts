@@ -52,6 +52,23 @@ export async function addBlocks(startblock, endblock) //add blocks + transaction
     console.log(Date())
 }
 
+export async function addBlocks_direct(startblock, endblock, callback = () => {}) //add blocks + transactions 
+{
+    let latestblock = await web3.eth.getBlockNumber();
+    if (endblock > latestblock)
+    { 
+        console.log("Error: Block #" +  endblock + " doesn't exist yet! Replacing with current block: #"+ latestblock); 
+        endblock =  latestblock;
+    }
+   for (let i=startblock;i<=endblock;i++) 
+    {
+        if (i % 100 == 0) console.log('checking block #'+i);
+         await db_block.getBlock_direct(i);
+    }
+    callback();
+    console.log('Done fetching.')
+}
+
 export async function addBlocks_batch(startblock, endblock, batch, threads = 6) //add blocks + transactions 
 {
     async function getBatch(startblock, endblock)
@@ -95,6 +112,48 @@ export async function addBlocks_batch(startblock, endblock, batch, threads = 6) 
     let numtxs;
     await eth_Tx_full.estimatedDocumentCount().then(count=> {console.log('Current # of txs in db: '+count); numtxs = count});
 
+    let latestblock = await web3.eth.getBlockNumber();
+    if (endblock > latestblock)
+    { 
+        console.log("Error: Block #" +  endblock + " doesn't exist yet! Replacing with current block: #"+ latestblock); 
+        endblock =  latestblock;
+    }
+   for (let i=startblock;i<=endblock;i+=batch) 
+    {
+        q.push({startblock: i, endblock : i+batch})
+    }
+}
+
+export async function addBlocks_batch_direct(startblock, endblock, batch, threads = 6) //add blocks + transactions 
+{
+    async function getBatch(startblock, endblock)
+    {
+        for (let j = startblock; j<=endblock; j++)
+        {
+            if (j % 100 == 0) console.log('checking block #'+j);
+            await db_block.getBlock_direct(j);
+        }
+    }
+
+    var q = tress(async function(batch, callback){
+        console.log('running batch' + batch.startblock + '-' +batch.endblock);
+        await getBatch(batch.startblock, batch.endblock)
+        callback()
+    }, threads);
+
+    q.drain = async function(){
+        console.log(date);
+        var date2 = new Date()
+        var delta = (date2.valueOf() - date1.valueOf()) / 1000;
+        console.log(Date());
+        console.log('Added in '+ delta+' seconds');
+        
+    }
+
+    var date1 = new Date()
+    var date = Date()
+    
+    
     let latestblock = await web3.eth.getBlockNumber();
     if (endblock > latestblock)
     { 
