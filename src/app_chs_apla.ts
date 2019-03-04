@@ -143,7 +143,7 @@ grouping them by destination address, summing up transactions and values for eac
     const query = `
     SELECT SUM(value) AS value, to AS _id, COUNT(to) AS Txes, MIN(timestamp) AS firstBlock 
     FROM ethereum.transaction_from_latest 
-    WHERE (from='${address_from}') AND (timestamp>=${firstBlock}) 
+    WHERE (from='${address_from}') AND (timestamp>${firstBlock}) 
     GROUP BY to 
     ORDER BY SUM(value) AS value DESC 
     LIMIT 20
@@ -190,7 +190,7 @@ grouping them by destination address, summing up transactions and values for eac
     (
         SELECT SUM(value) AS value, to, COUNT(to) AS Txes 
         FROM ethereum.transaction_from_latest 
-        WHERE (from='${address_from}') AND (timestamp>=${firstBlock}) 
+        WHERE (from='${address_from}') AND (timestamp>${firstBlock}) 
         GROUP BY to  
     )
     `
@@ -242,7 +242,7 @@ grouping them by destination address, summing up transactions and values for eac
     const query = `
     SELECT SUM(value) AS value, from AS _id, COUNT(from) AS Txes, MAX(timestamp) AS lastBlock 
     FROM ethereum.transaction_to_latest 
-    WHERE (to='${address_to}') AND (timestamp<=${lastBlock}) 
+    WHERE (to='${address_to}') AND (timestamp<${lastBlock}) 
     GROUP BY from 
     ORDER BY SUM(value) AS value DESC 
     LIMIT 20
@@ -290,7 +290,7 @@ grouping them by destination address and counting those unique addresses, summin
     (
         SELECT SUM(value) AS value, from, COUNT(from) AS Txes 
         FROM ethereum.transaction_to_latest 
-        WHERE (to='${address_to}') AND (timestamp<=${lastBlock}) 
+        WHERE (to='${address_to}') AND (timestamp<${lastBlock}) 
         GROUP BY from  
     )
     `
