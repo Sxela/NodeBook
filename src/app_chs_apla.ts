@@ -1,8 +1,15 @@
 
 let ClickHouse = require('@apla/clickhouse');
 
-var ch = new ClickHouse ({host: 'data_chs', port: 8123});
+//var ch = new ClickHouse ({host: 'localhost', port: 8123});
+var ch = new ClickHouse ({host: 'data_chs', port: 8123}); //- use for local docker clickhouse
+
 //creating db and table if not existing
+
+
+import Web3 = require("web3");
+import config = require('./config/config');
+let web3 = new Web3(new Web3.providers.HttpProvider(config.web3Provider));
 
 
 async function create_db_and_table()
@@ -112,8 +119,8 @@ lastBlock
 checking all outgoing transactions from address_from that happened after the fist incoming transaction to address_from, 
 grouping them by destination address, summing up transactions and values for each destination address */
 {
-    //address_from = Web3.utils.toChecksumAddress(address_from)
-
+    //address_from = web3.utils.toChecksumAddress(address_from)
+    address_from = web3.utils.toChecksumAddress(address_from)
     const query = `
     SELECT SUM(value) AS value, to AS _id, COUNT(to) AS Txes, MIN(timestamp) AS firstBlock
     FROM ethereum.transaction_from_latest 
@@ -140,6 +147,7 @@ lastBlock
 checking all outgoing transactions from address_from that happened after the fist incoming transaction to address_from, 
 grouping them by destination address, summing up transactions and values for each destination address */
 {
+    address_from = web3.utils.toChecksumAddress(address_from)
     const query = `
     SELECT SUM(value) AS value, to AS _id, COUNT(to) AS Txes, MIN(timestamp) AS firstBlock 
     FROM ethereum.transaction_from_latest 
@@ -162,6 +170,7 @@ value
 checking all outgoing transactions from address_from that happened after the fist incoming transaction to address_from, 
 grouping them by destination address, summing up transactions and values for each destination address */
 {
+    address_from = web3.utils.toChecksumAddress(address_from)
     const query = `
     SELECT COUNT(to) as links, SUM(value) as value FROM 
     (
@@ -185,6 +194,7 @@ value
 checking all outgoing transactions from address_from that happened after the fist incoming transaction to address_from, 
 grouping them by destination address, summing up transactions and values for each destination address */
 {
+    address_from = web3.utils.toChecksumAddress(address_from)
     const query = `
     SELECT COUNT(to) as links, SUM(value) as value FROM 
     (
@@ -215,6 +225,7 @@ lastBlock
 checking all incoming transactions to address_to that happened before the last outgoing transaction from address_to, 
 grouping them by destination address, summing up transactions and values for each destination address */
 {
+    address_to = web3.utils.toChecksumAddress(address_to)
     const query = `
     SELECT SUM(value) AS value, from AS _id, COUNT(from) AS Txes, MAX(timestamp) AS lastBlock 
     FROM ethereum.transaction_to_latest 
@@ -239,6 +250,7 @@ lastBlock
 checking all incoming transactions to address_to that happened before the last outgoing transaction from address_to, 
 grouping them by destination address, summing up transactions and values for each destination address */
 {
+    address_to = web3.utils.toChecksumAddress(address_to)
     const query = `
     SELECT SUM(value) AS value, from AS _id, COUNT(from) AS Txes, MAX(timestamp) AS lastBlock 
     FROM ethereum.transaction_to_latest 
@@ -261,6 +273,7 @@ value
 checking all incoming transactions to address_to that happened before the last outgoing transaction from address_to, 
 grouping them by destination address and counting those unique addresses, summing up all the transactions */
 {
+    address_to = web3.utils.toChecksumAddress(address_to)
     const query = `
     SELECT COUNT(from) as links, SUM(value) as value FROM 
     (
@@ -285,6 +298,7 @@ value
 checking all incoming transactions to address_to that happened before the last outgoing transaction from address_to, 
 grouping them by destination address and counting those unique addresses, summing up all the transactions */
 {
+    address_to = web3.utils.toChecksumAddress(address_to)
     const query = `
     SELECT COUNT(from) as links, SUM(value) as value FROM 
     (
@@ -302,11 +316,6 @@ grouping them by destination address and counting those unique addresses, summin
                                         BLOCK FETCHER
     --------------------------------------------------------------------------------
 */ 
-
-
-import Web3 = require("web3");
-import config = require('./config/config');
-let web3 = new Web3(new Web3.providers.HttpProvider(config.web3Provider));
 
 export async function getBlock_direct(num:Number){
     if ((num % 100) == 0) {console.log('Fetching block number' + num)}
